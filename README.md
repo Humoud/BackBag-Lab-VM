@@ -41,6 +41,7 @@ Windows base images are from [DetectionLab](https://github.com/clong/DetectionLa
 
 
 **Resource Utilization:**
+
 Note that you can decrease\increase the specs below (it's really easy) based on your needs. 
 
 | VM       | CPU | RAM |
