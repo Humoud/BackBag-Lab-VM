@@ -187,26 +187,11 @@ cd BackBag-Lab-VM
 ```
 
 **Then proceed to one of the sections below. It is best to pick a section which suits your needs:**
-- [BackBag Lab\VM](#backbag-labvm)
-  - [Contents](#contents)
-  - [Background & Purpose](#background--purpose)
-  - [Design](#design)
-    - [VMs](#vms)
-    - [Available Environment Configurations](#available-environment-configurations)
-    - [Configuration](#configuration)
-      - [Provisioning](#provisioning)
-      - [Tool Install Scripts](#tool-install-scripts)
-- [Usage](#usage)
-  - [Requirements](#requirements)
-  - [Spin Up The Whole Lab](#spin-up-the-whole-lab)
-    - [Lab VM Selection](#lab-vm-selection)
-  - [Spin Up Only The Windows Analyst VM](#spin-up-only-the-windows-analyst-vm)
 - [Example Setups](#example-setups)
-    - [1: Ubuntu Server + IIS Server](#1-ubuntu-server--iis-server)
-    - [2: Win10 + IIS Server](#2-win10--iis-server)
-    - [3: AD + IIS Server (Joined to domain)](#3-ad--iis-server-joined-to-domain)
-- [Tools](#tools)
-- [Credits](#credits)
+  - [1: Ubuntu Server + IIS Server](#1-ubuntu-server--iis-server)
+  - [2: Win10 + IIS Server](#2-win10--iis-server)
+  - [3: AD + IIS Server (Joined to domain)](#3-ad--iis-server-joined-to-domain)
+
 
 
 ## Spin Up The Whole Lab
