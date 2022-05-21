@@ -114,6 +114,10 @@ Vagrant.configure("2") do |config|
       cfg.vm.network "forwarded_port", guest: 3389, host: 63389, auto_correct: true
       #
 
+      # solve vbox issue on macos
+      cfg.vm.provision "file", source: "scripts", destination: "c:/vagrant/"
+      cfg.vm.provision "file", source: "resources", destination: "c:/vagrant/"
+      #
       cfg.vm.provision "shell", path: "scripts/fix-second-network.ps1", privileged: true, args: "-ip #{WINSRV01_IP} -dns 8.8.8.8 -gateway 192.168.56.1" 
       cfg.vm.provision "shell", path: "scripts/MakeWindows10GreatAgain.ps1", privileged: false
       cfg.vm.provision "shell", path: "scripts/provision.ps1", privileged: false, args: SRV01_ARGS
@@ -164,7 +168,11 @@ Vagrant.configure("2") do |config|
       # rdp access
       cfg.vm.network "forwarded_port", guest: 3389, host: 53389, auto_correct: true
       #
-
+      
+      # solve vbox issue on macos
+      cfg.vm.provision "file", source: "scripts", destination: "c:/vagrant/"
+      cfg.vm.provision "file", source: "resources", destination: "c:/vagrant/"
+      #
 
       cfg.vm.provision "shell", path: "scripts/fix-second-network.ps1", privileged: true, args: "-ip #{WINSRV02_IP} -dns 8.8.8.8 -gateway 192.168.56.1" 
       cfg.vm.provision "shell", path: "scripts/MakeWindows10GreatAgain.ps1", privileged: false
@@ -217,6 +225,10 @@ Vagrant.configure("2") do |config|
       cfg.vm.network "forwarded_port", guest: 3389, host: 43389, auto_correct: true
       #
 
+      # solve vbox issue on macos
+      cfg.vm.provision "file", source: "scripts", destination: "c:/vagrant/"
+      cfg.vm.provision "file", source: "resources", destination: "c:/vagrant/"
+      #
       cfg.vm.provision "shell", path: "scripts/fix-second-network.ps1", privileged: true, args: "-ip #{WIN01_IP} -dns 8.8.8.8 -gateway 192.168.56.1" 
       cfg.vm.provision "shell", path: "scripts/MakeWindows10GreatAgain.ps1", privileged: false
       cfg.vm.provision "shell", path: "scripts/provision.ps1", privileged: false, args: WIN10_ARGS
