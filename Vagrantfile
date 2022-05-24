@@ -85,10 +85,10 @@ Vagrant.configure("2") do |config|
       cfg.vm.provider "virtualbox" do |v, override|
         v.gui = true
         v.name = "backbag-nix01"
-        v.default_nic_type = "82545EM"
         v.customize ["modifyvm", :id, "--memory", NIX01_RAM]
         v.customize ["modifyvm", :id, "--cpus", NIX01_CPU]
         v.customize ["modifyvm", :id, "--vram", "32"]
+        v.customize ["modifyvm", :id, "--nicpromisc2", "allow-all"]
         v.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
         v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
         v.customize ["setextradata", "global", "GUI/SuppressMessages", "all" ]
