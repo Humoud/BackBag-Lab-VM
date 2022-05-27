@@ -65,6 +65,12 @@ SRV02_ARGS  = "-joinDomain #{AD_DOMAIN} -ad_ip #{WINSRV01_IP} -domain #{DOMAIN}"
 # Join WIN01 to domain
 AD_DOMAIN = 1
 WIN10_ARGS = "-joinDomain #{AD_DOMAIN} -ad_ip #{WINSRV01_IP} -domain #{DOMAIN}"
+######################################################
+# Mounts 2 folders on the Windows VMs
+# This is needed when provisioning on macOS using VBox
+# Make sure you set it to `false` before analyzing malware after you
+# finish provisioning the VMs
+MOUNT = true
 ###### /CONFIG VARIABLES ##########################################################
 
 Vagrant.configure("2") do |config|
@@ -114,10 +120,13 @@ Vagrant.configure("2") do |config|
       cfg.vm.network "forwarded_port", guest: 3389, host: 63389, auto_correct: true
       #
 
-      # solve vbox issue on macos
+      if MOUNT
+      # solve vbox issue on macos when provisioning
       cfg.vm.provision "file", source: "scripts", destination: "c:/vagrant/"
       cfg.vm.provision "file", source: "resources", destination: "c:/vagrant/"
       #
+      end
+
       cfg.vm.provision "shell", path: "scripts/fix-second-network.ps1", privileged: true, args: "-ip #{WINSRV01_IP} -dns 8.8.8.8 -gateway 192.168.56.1" 
       cfg.vm.provision "shell", path: "scripts/MakeWindows10GreatAgain.ps1", privileged: false
       cfg.vm.provision "shell", path: "scripts/provision.ps1", privileged: false, args: SRV01_ARGS
@@ -169,10 +178,12 @@ Vagrant.configure("2") do |config|
       cfg.vm.network "forwarded_port", guest: 3389, host: 53389, auto_correct: true
       #
       
-      # solve vbox issue on macos
+      if MOUNT
+      # solve vbox issue on macos when provisioning
       cfg.vm.provision "file", source: "scripts", destination: "c:/vagrant/"
       cfg.vm.provision "file", source: "resources", destination: "c:/vagrant/"
       #
+      end
 
       cfg.vm.provision "shell", path: "scripts/fix-second-network.ps1", privileged: true, args: "-ip #{WINSRV02_IP} -dns 8.8.8.8 -gateway 192.168.56.1" 
       cfg.vm.provision "shell", path: "scripts/MakeWindows10GreatAgain.ps1", privileged: false
@@ -225,10 +236,13 @@ Vagrant.configure("2") do |config|
       cfg.vm.network "forwarded_port", guest: 3389, host: 43389, auto_correct: true
       #
 
-      # solve vbox issue on macos
+      if MOUNT
+      # solve vbox issue on macos when provisioning
       cfg.vm.provision "file", source: "scripts", destination: "c:/vagrant/"
       cfg.vm.provision "file", source: "resources", destination: "c:/vagrant/"
       #
+      end
+
       cfg.vm.provision "shell", path: "scripts/fix-second-network.ps1", privileged: true, args: "-ip #{WIN01_IP} -dns 8.8.8.8 -gateway 192.168.56.1" 
       cfg.vm.provision "shell", path: "scripts/MakeWindows10GreatAgain.ps1", privileged: false
       cfg.vm.provision "shell", path: "scripts/provision.ps1", privileged: false, args: WIN10_ARGS
