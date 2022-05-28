@@ -13,9 +13,9 @@
 ###### CONFIG VARIABLES ###########################################################
 
 # Lab VM Selection
-NIX01    = true
+NIX01    = false
 WINSRV01 = true
-WINSRV02 = true
+WINSRV02 = false
 WIN01    = true
 
 ######################################################
@@ -63,7 +63,7 @@ SRV02_ARGS  = "-joinDomain #{AD_DOMAIN} -ad_ip #{WINSRV01_IP} -domain #{DOMAIN}"
 # WIN01 Config
 ###
 # Join WIN01 to domain
-AD_DOMAIN = 1
+AD_DOMAIN = 0
 WIN10_ARGS = "-joinDomain #{AD_DOMAIN} -ad_ip #{WINSRV01_IP} -domain #{DOMAIN}"
 ######################################################
 # Mounts 2 folders on the Windows VMs
@@ -236,15 +236,18 @@ Vagrant.configure("2") do |config|
       cfg.vm.network "forwarded_port", guest: 3389, host: 43389, auto_correct: true
       #
 
-      if MOUNT
-      # solve vbox issue on macos when provisioning
+      if MOUNT # TODO add to other win based machines
+      # https://www.vagrantup.com/docs/synced-folders
+      # solves: Enabling and configuring shared folders timeout
+      cfg.vm.synced_folder '.', '/vagrant', disabled: true
+      # solves: vbox issue on macos when provisioning
       cfg.vm.provision "file", source: "scripts", destination: "c:/vagrant/"
       cfg.vm.provision "file", source: "resources", destination: "c:/vagrant/"
       #
       end
 
       cfg.vm.provision "shell", path: "scripts/fix-second-network.ps1", privileged: true, args: "-ip #{WIN01_IP} -dns 8.8.8.8 -gateway 192.168.56.1" 
-      cfg.vm.provision "shell", path: "scripts/MakeWindows10GreatAgain.ps1", privileged: false
+      # cfg.vm.provision "shell", path: "scripts/MakeWindows10GreatAgain.ps1", privileged: false
       cfg.vm.provision "shell", path: "scripts/provision.ps1", privileged: false, args: WIN10_ARGS
       cfg.vm.provision "reload"
       cfg.vm.provision "shell", path: "scripts/provision.ps1", privileged: false, args: WIN10_ARGS
@@ -252,7 +255,7 @@ Vagrant.configure("2") do |config|
       # Script below contains Win tools and dev env setup
       cfg.vm.provision "shell", path: "scripts/install-analyst-utils.ps1", privileged: false
       # ##############################################################################################
-      cfg.vm.provision "shell", path: "scripts/install-sysmon.ps1", privileged: false
+      # cfg.vm.provision "shell", path: "scripts/install-sysmon.ps1", privileged: false
       # ##############################################################################################
 
       cfg.vm.provider "vmware_desktop" do |v, override|

@@ -1,0 +1,36 @@
+Windows Registry Editor Version 5.00
+; Adds open cmd\powershell here to the right click context menu
+
+
+[HKEY_CLASSES_ROOT\Directory\Background\shell\cmd01]
+"MUIVerb"="cmd here"
+"Icon"="cmd.exe"
+
+[HKEY_CLASSES_ROOT\Directory\Background\shell\cmd01\command]
+@="cmd.exe /s /k pushd \"%V\""
+
+
+[HKEY_CLASSES_ROOT\Directory\Background\shell\cmd02]
+"MUIVerb"="cmd here (Administrator)"
+"Icon"="cmd.exe"
+"HasLUAShield"=""
+
+[HKEY_CLASSES_ROOT\Directory\Background\shell\cmd02\command]
+@="PowerShell -windowstyle hidden -Command \"Start-Process cmd -ArgumentList '/s,/k,pushd,%V' -Verb RunAs\""
+
+
+[HKEY_CLASSES_ROOT\Directory\Background\shell\cmd03]
+"MUIVerb"="powershell here"
+"Icon"="powershell.exe"
+
+[HKEY_CLASSES_ROOT\Directory\Background\shell\cmd03\command]
+@="PowerShell -noexit -nologo -command Set-Location -literalPath '%V'"
+
+
+[HKEY_CLASSES_ROOT\Directory\Background\shell\cmd04]
+"MUIVerb"="powershell here (Administrator)"
+"Icon"="powershell.exe"
+"HasLUAShield"=""
+
+[HKEY_CLASSES_ROOT\Directory\Background\shell\cmd04\command]
+@="PowerShell -windowstyle hidden -Command \"Start-Process cmd -ArgumentList '/s,/k,pushd,%V && start PowerShell -nologo && exit' -Verb RunAs\""

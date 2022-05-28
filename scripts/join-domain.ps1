@@ -13,7 +13,7 @@ $adapters = Get-WmiObject Win32_NetworkAdapterConfiguration | Where-Object {$_.I
 # Specify the DC as a WINS server to help with connectivity as well
 $adapters | ForEach-Object {if (!($_.Description).Contains("Hyper-V")) {$_.SetDNSServerSearchOrder($newDNSServers); $_.SetWINSServer($newDNSServers, "")}}
 
-Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Now join the domain..."
+Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Joining to domain..."
 $hostname = $(hostname)
 $user = $domain+"\vagrant"
 $pass = ConvertTo-SecureString "vagrant" -AsPlainText -Force

@@ -39,3 +39,6 @@ if ((gwmi win32_computersystem).partofdomain -eq $false) {
     . c:\vagrant\scripts\join-domain.ps1 -ad_ip $ad_ip -domain $domain
   }
 }
+
+# Add cmd\powershell here to right click context menu with 
+regedit /s c:\vagrant\scripts\rightclick.reg

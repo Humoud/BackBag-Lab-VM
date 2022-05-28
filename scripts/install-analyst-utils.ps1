@@ -53,6 +53,21 @@ function Install-ChocoEssentials {
   Set-Shortcut -src 'C:\ProgramData\chocolatey\bin' -dst $desk'ChocoBins.lnk'
 }
 #############################################################################################
+function Install-Python {
+  # https://docs.python.org/3/using/windows.html#installing-without-ui
+  Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Downloading and installing Python..."
+  Try { 
+    (New-Object System.Net.WebClient).DownloadFile('https://www.python.org/ftp/python/3.10.4/python-3.10.4-amd64.exe',
+      'C:\Users\vagrant\Downloads\python.exe')
+
+    Start-Process -FilePath "C:\Users\vagrant\Downloads\python.exe" -ArgumentList "/quiet InstallAllUsers=1 PrependPath=1 TargetDir=C:\Python310 Include_doc=0 Include_test=0" -Wait -NoNewWindow
+
+    Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Python installation successful!"
+  } Catch {
+    Write-Host "Python download failed :("
+  }
+}
+#############################################################################################
 function Install-ChocoAnalysisPackages {
   Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Downloading and installing analysis choco packages..."
   ##########################################################
@@ -281,6 +296,90 @@ function Install-Bloodhound {
   }
 }
 #############################################################################################
+
+function Install-AtomicRedTeam {
+  # https://github.com/redcanaryco/invoke-atomicredteam/wiki/Installing-Atomic-Red-Team
+  Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Downloading Atomic Red Team..."
+  Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
+  IEX (IWR 'https://raw.githubusercontent.com/redcanaryco/invoke-atomicredteam/master/install-atomicredteam.ps1' -UseBasicParsing);
+  Install-AtomicRedTeam -getAtomics -InstallPath "C:\Tools\AtomicRedTeam"
+  Set-Shortcut -src 'C:\Tools\AtomicRedTeam' -dst 'C:\users\vagrant\desktop\AtomicRedTeam.lnk'
+}
+
+function Install-Kansa {
+  # https://github.com/davehull/Kansa
+  Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Downloading Kansa..."
+  Try { 
+    (New-Object System.Net.WebClient).DownloadFile(
+      'https://github.com/davehull/Kansa/archive/refs/heads/master.zip',
+      'C:\Tools\Kansa.zip')
+
+      Expand-Archive -LiteralPath 'C:\Tools\Kansa.zip' -DestinationPath 'C:\Tools\'
+      del 'C:\Tools\Kansa.zip'
+      Set-Shortcut -src 'C:\Tools\Kansa-master' -dst 'C:\users\vagrant\desktop\Kansa.lnk'
+  } Catch {
+    Write-Host "Kansa Download failed"
+  }
+}
+
+function Install-Chainsaw {
+  # https://github.com/countercept/chainsaw
+  Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Downloading Chainsaw..."
+  Try { 
+    (New-Object System.Net.WebClient).DownloadFile(
+      'https://github.com/countercept/chainsaw/releases/download/v1.1.7/chainsaw_x86_64-pc-windows-msvc.zip',
+      'C:\Tools\chainsaw.zip')
+
+      Expand-Archive -LiteralPath 'C:\Tools\chainsaw.zip' -DestinationPath 'C:\Tools\'
+      del 'C:\Tools\chainsaw.zip'
+      Set-Shortcut -src 'C:\Tools\chainsaw' -dst 'C:\users\vagrant\desktop\chainsaw.lnk'
+  } Catch {
+    Write-Host "Chainsaw Download failed"
+  }
+}
+
+function Install-DeepBlueCLI {
+  # https://github.com/sans-blue-team/DeepBlueCLI.git
+  Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Downloading DeepBlueCLI..."
+  Try { 
+    (New-Object System.Net.WebClient).DownloadFile(
+      'https://github.com/sans-blue-team/DeepBlueCLI/archive/refs/heads/master.zip',
+      'C:\Tools\DeepBlueCLI.zip')
+
+      Expand-Archive -LiteralPath 'C:\Tools\DeepBlueCLI.zip' -DestinationPath 'C:\Tools\'
+      del 'C:\Tools\DeepBlueCLI.zip'
+      Set-Shortcut -src 'C:\Tools\DeepBlueCLI-master' -dst 'C:\users\vagrant\desktop\DeepBlueCLI.lnk'
+  } Catch {
+    Write-Host "DeepBlueCLI Download failed"
+  }
+}
+
+function Install-Jadx {
+  # https://github.com/skylot/jadx
+  Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Downloading Jadx..."
+  Try { 
+    (New-Object System.Net.WebClient).DownloadFile(
+      'https://github.com/skylot/jadx/releases/download/v1.4.0/jadx-gui-1.4.0-with-jre-win.zip',
+      'C:\Tools\jadx.zip')
+
+    Expand-Archive -LiteralPath 'C:\Tools\jadx.zip' -DestinationPath 'C:\Tools\'
+    del 'C:\Tools\jadx.zip'
+    Set-Shortcut -src 'C:\Tools\jadx-gui-1.4.0.exe' -dst 'C:\users\vagrant\desktop\jadx-gui.lnk'
+  } Catch {
+    Write-Host "Jadx Download failed"
+  }
+}
+
+function Install-Frida {
+  # https://frida.re/docs/installation/
+  # Install dependency
+  Install-Python
+
+  Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Installing Frida..."
+  
+  Start-Process -FilePath "c:\Python310\Scripts\pip.exe" -ArgumentList "install -q frida-tools" -Wait -NoNewWindow
+}
+#############################################################################################
 #############################################################################################
 ## Think of the below as "main"
 ## Include or exclude functions as you please
@@ -291,16 +390,22 @@ Set-Shortcut -src 'C:\Tools' -dst 'C:\users\vagrant\desktop\Tools.lnk'
 
 Install-Choco # Needed by other functions
 Install-ChocoEssentials
-Install-ChocoAnalysisPackages
-Get-PEStudio
-Install-ZimmermanTools
-Get-CyberChef
-Get-CorkamiPosters
-Get-Ghostpack
-Get-SysInternals
-Get-Nim
-Install-GoLang
-Install-Bloodhound
-Install-CommunityVS2022
+# Install-ChocoAnalysisPackages
+# Get-PEStudio
+# Install-ZimmermanTools
+# Get-CyberChef
+# Get-CorkamiPosters
+# Get-Ghostpack
+# Get-SysInternals
+# Get-Nim
+# Install-GoLang
+# Install-Bloodhound
+# Install-CommunityVS2022
+Install-AtomicRedTeam
+Install-Kansa
+Install-Chainsaw
+Install-DeepBlueCLI
+Install-Jadx
+Install-Frida
 
-Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Utilties installation complete!"
+Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Utilities installation complete!"
