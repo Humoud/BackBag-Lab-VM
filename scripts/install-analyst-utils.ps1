@@ -299,6 +299,7 @@ function Install-Bloodhound {
 
 function Install-AtomicRedTeam {
   # https://github.com/redcanaryco/invoke-atomicredteam/wiki/Installing-Atomic-Red-Team
+  # https://github.com/redcanaryco/invoke-atomicredteam/wiki/Import-the-Module
   Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Downloading Atomic Red Team..."
   Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
   IEX (IWR 'https://raw.githubusercontent.com/redcanaryco/invoke-atomicredteam/master/install-atomicredteam.ps1' -UseBasicParsing);
@@ -390,17 +391,17 @@ Set-Shortcut -src 'C:\Tools' -dst 'C:\users\vagrant\desktop\Tools.lnk'
 
 Install-Choco # Needed by other functions
 Install-ChocoEssentials
-# Install-ChocoAnalysisPackages
-# Get-PEStudio
-# Install-ZimmermanTools
-# Get-CyberChef
-# Get-CorkamiPosters
-# Get-Ghostpack
-# Get-SysInternals
-# Get-Nim
-# Install-GoLang
-# Install-Bloodhound
-# Install-CommunityVS2022
+Install-ChocoAnalysisPackages
+Get-PEStudio
+Install-ZimmermanTools
+Get-CyberChef
+Get-CorkamiPosters
+Get-Ghostpack
+Get-SysInternals
+Get-Nim
+Install-GoLang
+Install-Bloodhound
+Install-CommunityVS2022
 Install-AtomicRedTeam
 Install-Kansa
 Install-Chainsaw

@@ -13,9 +13,9 @@
 ###### CONFIG VARIABLES ###########################################################
 
 # Lab VM Selection
-NIX01    = false
+NIX01    = true
 WINSRV01 = true
-WINSRV02 = false
+WINSRV02 = true
 WIN01    = true
 
 ######################################################
@@ -63,7 +63,7 @@ SRV02_ARGS  = "-joinDomain #{AD_DOMAIN} -ad_ip #{WINSRV01_IP} -domain #{DOMAIN}"
 # WIN01 Config
 ###
 # Join WIN01 to domain
-AD_DOMAIN = 0
+AD_DOMAIN = 1
 WIN10_ARGS = "-joinDomain #{AD_DOMAIN} -ad_ip #{WINSRV01_IP} -domain #{DOMAIN}"
 ######################################################
 # Mounts 2 folders on the Windows VMs
@@ -121,6 +121,9 @@ Vagrant.configure("2") do |config|
       #
 
       if MOUNT
+      # https://www.vagrantup.com/docs/synced-folders
+      # solves: Enabling and configuring shared folders timeout
+      cfg.vm.synced_folder '.', '/vagrant', disabled: true
       # solve vbox issue on macos when provisioning
       cfg.vm.provision "file", source: "scripts", destination: "c:/vagrant/"
       cfg.vm.provision "file", source: "resources", destination: "c:/vagrant/"
@@ -179,6 +182,9 @@ Vagrant.configure("2") do |config|
       #
       
       if MOUNT
+      # https://www.vagrantup.com/docs/synced-folders
+      # solves: Enabling and configuring shared folders timeout
+      cfg.vm.synced_folder '.', '/vagrant', disabled: true
       # solve vbox issue on macos when provisioning
       cfg.vm.provision "file", source: "scripts", destination: "c:/vagrant/"
       cfg.vm.provision "file", source: "resources", destination: "c:/vagrant/"
