@@ -10,8 +10,9 @@ $vsCommunityPath  = "C:\Tools\vs_community.exe"
 $corkamiPath      = "C:\users\vagrant\desktop\corkami.zip"
 $ghostpackPath    = "C:\Tools\ghostpack.zip"
 $sysInternalsPath = "C:\Tools\SysInternals.zip"
-$bloodhoundPath    = "C:\Tools\Bloodhound.zip"
-$neo4jPath    = "C:\Tools\neo4j.zip"
+$bloodhoundPath   = "C:\Tools\Bloodhound.zip"
+$neo4jPath        = "C:\Tools\neo4j.zip"
+$pythonPath       = "C:\Python310"
 mkdir C:\Tools\
 #############################################################################################
 #############################################################################################
@@ -60,7 +61,7 @@ function Install-Python {
     (New-Object System.Net.WebClient).DownloadFile('https://www.python.org/ftp/python/3.10.4/python-3.10.4-amd64.exe',
       'C:\Users\vagrant\Downloads\python.exe')
 
-    Start-Process -FilePath "C:\Users\vagrant\Downloads\python.exe" -ArgumentList "/quiet InstallAllUsers=1 PrependPath=1 TargetDir=C:\Python310 Include_doc=0 Include_test=0" -Wait -NoNewWindow
+    Start-Process -FilePath "C:\Users\vagrant\Downloads\python.exe" -ArgumentList "/quiet InstallAllUsers=1 PrependPath=1 TargetDir=$pythonPath Include_doc=0 Include_test=0" -Wait -NoNewWindow
     del C:\Users\vagrant\Downloads\python.exe
     Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Python installation successful!"
   } Catch {
@@ -69,7 +70,7 @@ function Install-Python {
 }
 #############################################################################################
 function Install-AnalysisMiscTools {
-  Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Downloading and installing analysis choco packages..."
+  Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Downloading and installing analysis misc tools..."
   ##########################################################
   $pkgs = 'processhacker',
           'resourcehacker.portable',
@@ -83,11 +84,21 @@ function Install-AnalysisMiscTools {
   }
 }
 #############################################################################################
-function Install-WebNetworkAnalysisTools {
-  Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Downloading and installing analysis choco packages..."
+function Install-Burp {
+  Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Downloading and installing Burp..."
+  ##########################################################
+  $pkgs = 'burp-suite-free-edition'
+  #########################################################
+  ForEach ($pkgName in $pkgs)
+  {
+    choco install -y --limit-output --ignore-checksums --no-progress $pkgName
+  }
+}
+#############################################################################################
+function Install-NetworkAnalysisTools {
+  Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Downloading and installing Network Analysis Tools..."
   ##########################################################
   $pkgs = 'wireshark',
-          'burp-suite-free-edition',
           'network-miner'
   #########################################################
   ForEach ($pkgName in $pkgs)
@@ -122,7 +133,6 @@ function Install-HasherezadeTools {
     choco install -y --limit-output --ignore-checksums --no-progress $pkgName
   }
 }
-
 #############################################################################################
 # Download PEStudio
 function Get-PEStudio {
@@ -324,7 +334,6 @@ function Install-Bloodhound {
   }
 }
 #############################################################################################
-
 function Install-AtomicRedTeam {
   # https://github.com/redcanaryco/invoke-atomicredteam/wiki/Installing-Atomic-Red-Team
   # https://github.com/redcanaryco/invoke-atomicredteam/wiki/Import-the-Module
@@ -334,7 +343,7 @@ function Install-AtomicRedTeam {
   Install-AtomicRedTeam -getAtomics -InstallPath "C:\Tools\AtomicRedTeam"
   Set-Shortcut -src 'C:\Tools\AtomicRedTeam' -dst 'C:\users\vagrant\desktop\AtomicRedTeam.lnk'
 }
-
+#############################################################################################
 function Install-Kansa {
   # https://github.com/davehull/Kansa
   Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Downloading Kansa..."
@@ -350,7 +359,7 @@ function Install-Kansa {
     Write-Host "Kansa Download failed"
   }
 }
-
+#############################################################################################
 function Install-Chainsaw {
   # https://github.com/countercept/chainsaw
   Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Downloading Chainsaw..."
@@ -366,7 +375,7 @@ function Install-Chainsaw {
     Write-Host "Chainsaw Download failed"
   }
 }
-
+#############################################################################################
 function Install-DeepBlueCLI {
   # https://github.com/sans-blue-team/DeepBlueCLI.git
   Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Downloading DeepBlueCLI..."
@@ -382,7 +391,7 @@ function Install-DeepBlueCLI {
     Write-Host "DeepBlueCLI Download failed"
   }
 }
-
+#############################################################################################
 function Install-Jadx {
   # https://github.com/skylot/jadx
   Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Downloading Jadx..."
@@ -398,17 +407,20 @@ function Install-Jadx {
     Write-Host "Jadx Download failed"
   }
 }
-
+#############################################################################################
 function Install-Frida {
   # https://frida.re/docs/installation/
-  # Install dependency
-  Install-Python
-
+  # Check dependency
+  if (Test-Path -Path $pythonPath) {
+    write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Python is already installed..."
+  } else {
+    write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Python not installed..."
+    Install-Python
+  }
   Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Installing Frida..."
-  
   Start-Process -FilePath "c:\Python310\Scripts\pip.exe" -ArgumentList "install -q frida-tools" -Wait -NoNewWindow
 }
-
+#############################################################################################
 function Install-HxD {
   # https://mh-nexus.de/en/hxd/
   # https://forum.mh-nexus.de/viewtopic.php?t=885
@@ -427,6 +439,48 @@ function Install-HxD {
   }
 }
 #############################################################################################
+function Install-PEFile {
+  # https://pypi.org/project/pefile/
+  # Check dependency
+  if (Test-Path -Path $pythonPath) {
+    write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Python is already installed..."
+  } else {
+    write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Python not installed..."
+    Install-Python
+  }
+  Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Installing PEFile..."
+  Start-Process -FilePath "c:\Python310\Scripts\pip.exe" -ArgumentList "install -q pefile" -Wait -NoNewWindow
+}
+#############################################################################################
+function Install-APIMonitor {
+  # http://www.rohitab.com/downloads
+  Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Downloading API Monitor..."
+  Try { 
+    (New-Object System.Net.WebClient).DownloadFile(
+      'http://www.rohitab.com/download/api-monitor-v2r13-x86-x64.zip',
+      'C:\Tools\api-monitor.zip')
+
+    Expand-Archive -LiteralPath 'C:\Tools\api-monitor.zip' -DestinationPath 'C:\Tools\'
+    del 'C:\Tools\api-monitor.zip'
+  } Catch {
+    Write-Host "HxD Download failed"
+  }
+}
+#############################################################################################
+function Install-MalcodeAnalystPack {
+  # https://github.com/dzzie/MAP
+  Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Downloading Malcode Analyst Pack..."
+  Try { 
+    (New-Object System.Net.WebClient).DownloadFile(
+      'https://github.com/dzzie/MAP/releases/download/current/map_setup.exe',
+      'C:\Tools\map_setup.exe')
+    Start-Process -FilePath "C:\Tools\map_setup.exe" -ArgumentList '/Silent /ALLUSERS /DIR="C:\Tools\map"' -Wait -NoNewWindow
+    del 'C:\Tools\map_setup.exe'
+  } Catch {
+    Write-Host "Malcode Analyst Pack Download failed"
+  }
+}
+#############################################################################################
 #############################################################################################
 ## Think of the below as "main"
 ## Include or exclude functions as you please
@@ -437,26 +491,36 @@ Set-Shortcut -src 'C:\Tools' -dst 'C:\users\vagrant\desktop\Tools.lnk'
 
 Install-Choco # Needed by other functions
 Install-ChocoEssentials
+###########
+# Blue-ish
 Install-AnalysisMiscTools
-Install-WebNetworkAnalysisTools
+Install-ZimmermanTools
+Install-Kansa
+Install-Chainsaw
+Install-DeepBlueCLI
+Get-PEStudio
+Install-NetworkAnalysisTools
 Install-DebuggerDisassembler
 Install-HasherezadeTools
-Get-PEStudio
 Install-HxD
-Install-ZimmermanTools
-Get-CyberChef
-Get-CorkamiPosters
+Install-Jadx
+Install-PEFile
+Install-APIMonitor
+Install-MalcodeAnalystPack
+###########
+# Red-ish
+Install-Burp
 Get-Ghostpack
-Get-SysInternals
 Get-Nim
 Install-GoLang
 Install-Bloodhound
 Install-CommunityVS2022
 Install-AtomicRedTeam
-Install-Kansa
-Install-Chainsaw
-Install-DeepBlueCLI
-Install-Jadx
+
+# Misc
+Get-CorkamiPosters
+Get-CyberChef
+Get-SysInternals
 Install-Frida
 
 Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Utilities installation complete!"
