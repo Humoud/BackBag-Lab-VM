@@ -63,7 +63,7 @@ SRV02_ARGS  = "-joinDomain #{AD_DOMAIN} -ad_ip #{WINSRV01_IP} -domain #{DOMAIN}"
 # WIN01 Config
 ###
 # Join WIN01 to domain
-AD_DOMAIN = 1
+AD_DOMAIN = 0 # 0 = will not join to domain, change to 1 to join
 WIN10_ARGS = "-joinDomain #{AD_DOMAIN} -ad_ip #{WINSRV01_IP} -domain #{DOMAIN}"
 ######################################################
 # Mounts 2 folders on the Windows VMs
@@ -120,10 +120,10 @@ Vagrant.configure("2") do |config|
       cfg.vm.network "forwarded_port", guest: 3389, host: 63389, auto_correct: true
       #
 
-      if MOUNT
       # https://www.vagrantup.com/docs/synced-folders
       # solves: Enabling and configuring shared folders timeout
       cfg.vm.synced_folder '.', '/vagrant', disabled: true
+      if MOUNT
       # solve vbox issue on macos when provisioning
       cfg.vm.provision "file", source: "scripts", destination: "c:/vagrant/"
       cfg.vm.provision "file", source: "resources", destination: "c:/vagrant/"
@@ -181,10 +181,10 @@ Vagrant.configure("2") do |config|
       cfg.vm.network "forwarded_port", guest: 3389, host: 53389, auto_correct: true
       #
       
-      if MOUNT
       # https://www.vagrantup.com/docs/synced-folders
       # solves: Enabling and configuring shared folders timeout
       cfg.vm.synced_folder '.', '/vagrant', disabled: true
+      if MOUNT
       # solve vbox issue on macos when provisioning
       cfg.vm.provision "file", source: "scripts", destination: "c:/vagrant/"
       cfg.vm.provision "file", source: "resources", destination: "c:/vagrant/"
@@ -242,10 +242,10 @@ Vagrant.configure("2") do |config|
       cfg.vm.network "forwarded_port", guest: 3389, host: 43389, auto_correct: true
       #
 
-      if MOUNT # TODO add to other win based machines
       # https://www.vagrantup.com/docs/synced-folders
       # solves: Enabling and configuring shared folders timeout
       cfg.vm.synced_folder '.', '/vagrant', disabled: true
+      if MOUNT
       # solves: vbox issue on macos when provisioning
       cfg.vm.provision "file", source: "scripts", destination: "c:/vagrant/"
       cfg.vm.provision "file", source: "resources", destination: "c:/vagrant/"

@@ -38,7 +38,7 @@ apt_install_prerequisites() {
   echo "[$(date +%H:%M:%S)]: Using apt-fast to install packages..."
   apt-fast install -y wget net-tools apt-transport-https ca-certificates curl software-properties-common build-essential libssl-dev libffi-dev python3-dev python3-pip python3-venv automake libtool make gcc pkg-config
 }
-
+#########################################################################################################
 apt_install_docker(){
   # Install docker
   apt -y install docker-ce
@@ -47,11 +47,11 @@ apt_install_docker(){
   curl -L "https://github.com/docker/compose/releases/download/v${COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose &&\
   chmod +x /usr/local/bin/docker-compose
 }
-
+#########################################################################################################
 apt_install_scanners(){
   apt-fast install -y nmap masscan
 }
-
+#########################################################################################################
 apt_install_zeek(){
   # https://software.opensuse.org//download.html?project=security%3Azeek&package=zeek-lts
   echo "postfix postfix/mailname string example.com" | debconf-set-selections
@@ -63,12 +63,12 @@ install_metasploit(){
   # https://docs.rapid7.com/metasploit/installing-the-metasploit-framework/
   curl https://raw.githubusercontent.com/rapid7/metasploit-omnibus/master/config/templates/metasploit-framework-wrappers/msfupdate.erb > msfinstall && chmod 755 msfinstall && ./msfinstall
 }
-
+#########################################################################################################
 install_sliverc2(){
   # https://github.com/BishopFox/sliver
   curl https://sliver.sh/install|sudo bash
 }
-
+#########################################################################################################
 install_radare2(){
   # https://github.com/radareorg/radare2#installation
   git clone https://github.com/radareorg/radare2
@@ -78,7 +78,7 @@ install_radare2(){
   # clean up
   rm -rf /home/vagrant/radare2
 }
-
+#########################################################################################################
 install_yara(){
   # https://github.com/radareorg/radare2#installation
   cd /home/vagrant
@@ -92,12 +92,26 @@ install_yara(){
   # clean up
   rm -rf /home/vagrant/yara-${YARA_VERSION}.tar.gz
 }
-
+#########################################################################################################
+install_binlex(){
+  # https://github.com/c3rb3ru5d3d53c/binlex
+  # deps
+  apt-fast install -y git build-essential cmake make parallel doxygen git-lfs rpm python3 python3-dev
+  cd /home/vagrant
+  git clone --recursive https://github.com/c3rb3ru5d3d53c/binlex.git
+  # Install
+  cd binlex/
+  make threads=4
+  make install
+  cd /home/vagrant
+  chown -R vagrant:vagrant binlex/
+}
+#########################################################################################################
 install_pywhat(){
   # https://github.com/bee-san/pyWhat
   pip3 install pywhat[optimize]
 }
-
+#########################################################################################################
 install_spiderfoot(){
   cd /opt
   wget https://github.com/smicallef/spiderfoot/archive/v${SPIDERFOOT_VERSION}.tar.gz
@@ -117,25 +131,24 @@ docker_evilwinrm(){
   docker pull oscarakaelvis/evil-winrm:latest
   echo "docker run --rm -ti --name evil-winrm -v /home/foo/ps1_scripts:/ps1_scripts -v /home/foo/exe_files:/exe_files -v /home/foo/data:/data oscarakaelvis/evil-winrm" > /opt/evilwinrm.sh
 }
-
+#########################################################################################################
 docker_powershell_empire(){
   # https://bc-security.gitbook.io/empire-wiki/quickstart/installation
   docker pull bcsecurity/empire:latest
 }
-
+#########################################################################################################
 docker_crackmapexec(){
   # https://mpgn.gitbook.io/crackmapexec/getting-started/installation/installation-for-docker
   docker pull byt3bl33d3r/crackmapexec
   echo "docker run -it --entrypoint=/bin/sh --name crackmapexec -v ~/.cme:/root/.cme byt3bl33d3r/crackmapexec" > /opt/crackmapexec.sh
 }
-
+#########################################################################################################
 docker_clamav(){
   # https://docs.clamav.net/manual/Installing/Docker.html
   # note: latest_base does not contain av sigs
   docker pull clamav/clamav:latest_base
   echo -e 'docker run -it --rm \n--mount type=bind,source=/path/to/scan,target=/scandir \n--mount type=bind,source=/opt/clamav/databases,target=/var/lib/clamav \nclamav/clamav:latest_base \nclamscan /scandir' > /opt/clamav.sh
 }
-
 #################################################################################
 #################################################################################
 #################################################################################
@@ -147,6 +160,7 @@ main() {
   apt_install_docker
   apt_install_scanners
   apt_install_zeek
+  install_binlex
   install_metasploit
   install_sliverc2
   install_radare2

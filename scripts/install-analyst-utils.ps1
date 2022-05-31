@@ -517,6 +517,31 @@ function Install-AndroidPlatformTools {
   }
 }
 #############################################################################################
+function Install-DummyFilesCreator {
+  # https://github.com/Humoud/dummy-files-creator
+  # Fork of https://github.com/matuzalemmuller/dummy-files-creator
+  # Check dependency
+  if (Test-Path -Path $pythonPath) {
+    write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Python is already installed..."
+  } else {
+    write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Python not installed..."
+    Install-Python
+  }
+  Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Downloading Dummy Files Creator..."
+  Try { 
+    (New-Object System.Net.WebClient).DownloadFile(
+      'https://github.com/Humoud/dummy-files-creator/archive/refs/heads/master.zip',
+      'C:\Tools\dummyfilescreator.zip')
+    Expand-Archive -LiteralPath 'C:\Tools\dummyfilescreator.zip' -DestinationPath 'C:\Tools\'
+    Start-Process -FilePath "cmd" -ArgumentList '/c cd C:\Tools\dummy-files-creator-master\spec && C:\Python310\Scripts\pip.exe install -q -r ..\requirements.txt && C:\Python310\Scripts\pyinstaller.exe --clean --windowed --onefile windows.spec' -Wait -NoNewWindow
+    cp 'C:\tools\dummy-files-creator-master\spec\dist\Dummy Files Creator.exe' C:\Tools\
+    Remove-Item C:\Tools\dummy-files-creator-master\ -Recurse
+    del 'C:\Tools\dummyfilescreator.zip'
+  } Catch {
+    Write-Host "Dummy Files Creator Download failed"
+  }
+}
+#############################################################################################
 #############################################################################################
 ## Think of the below as "main"
 ## Include or exclude functions as you please
@@ -560,6 +585,7 @@ Get-CyberChef
 Get-SysInternals
 Install-Frida
 Install-AndroidPlatformTools
+Install-DummyFilesCreator
 
 
 Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Utilities installation complete!"
