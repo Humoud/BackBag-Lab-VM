@@ -24,7 +24,7 @@ function Set-Shortcut([String] $src, [String] $dst) {
 }
 #############################################################################################
 # Install Choco
-function Install-Choco{
+function Install-Choco {
   If (-not (Test-Path "C:\ProgramData\chocolatey")) {
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
     Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Installing Chocolatey"
@@ -61,28 +61,46 @@ function Install-Python {
       'C:\Users\vagrant\Downloads\python.exe')
 
     Start-Process -FilePath "C:\Users\vagrant\Downloads\python.exe" -ArgumentList "/quiet InstallAllUsers=1 PrependPath=1 TargetDir=C:\Python310 Include_doc=0 Include_test=0" -Wait -NoNewWindow
-
+    del C:\Users\vagrant\Downloads\python.exe
     Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Python installation successful!"
   } Catch {
     Write-Host "Python download failed :("
   }
 }
 #############################################################################################
-function Install-ChocoAnalysisPackages {
+function Install-AnalysisMiscTools {
+  Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Downloading and installing analysis choco packages..."
+  ##########################################################
+  $pkgs = 'processhacker',
+          'resourcehacker.portable',
+          'yara',
+          'die'
+          # 'dotpeek' Exception of type 'System.OutOfMemoryException' was thrown.
+  #########################################################
+  ForEach ($pkgName in $pkgs)
+  {
+    choco install -y --limit-output --ignore-checksums --no-progress $pkgName
+  }
+}
+#############################################################################################
+function Install-WebNetworkAnalysisTools {
   Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Downloading and installing analysis choco packages..."
   ##########################################################
   $pkgs = 'wireshark',
           'burp-suite-free-edition',
-          'processhacker',
-          'resourcehacker.portable',
-          'network-miner',
-          'ghidra',
+          'network-miner'
+  #########################################################
+  ForEach ($pkgName in $pkgs)
+  {
+    choco install -y --limit-output --ignore-checksums --no-progress $pkgName
+  }
+}
+#############################################################################################
+function Install-DebuggerDisassembler {
+  Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Downloading and installing Debuggers and Disassemblers..."
+  ##########################################################
+  $pkgs = 'ghidra',
           'x64dbg.portable',
-          'pebear',
-          'pesieve',
-          'hollowshunter',
-          'yara',
-          'die',
           'dnspy'
           # 'dotpeek' Exception of type 'System.OutOfMemoryException' was thrown.
   #########################################################
@@ -90,12 +108,24 @@ function Install-ChocoAnalysisPackages {
   {
     choco install -y --limit-output --ignore-checksums --no-progress $pkgName
   }
-  RefreshEnv
+}
+#############################################################################################
+function Install-HasherezadeTools {
+  Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Downloading and installing Hasherezade Tools..."
+  ##########################################################
+  $pkgs = 'pebear',
+          'pesieve',
+          'hollowshunter'
+  #########################################################
+  ForEach ($pkgName in $pkgs)
+  {
+    choco install -y --limit-output --ignore-checksums --no-progress $pkgName
+  }
 }
 
 #############################################################################################
 # Download PEStudio
-function Get-PEStudio{
+function Get-PEStudio {
   # https://www.winitor.com/
   Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Downloading pestudio.zip..."
   Try { 
@@ -111,7 +141,7 @@ function Get-PEStudio{
 }
 #############################################################################################
 # Download and Run Get-ZimmermanTools
-Function Install-ZimmermanTools{
+Function Install-ZimmermanTools {
   # https://github.com/EricZimmerman/Get-ZimmermanTools
   Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Downloading Get-ZimmermanTools.zip..."
   Try { 
@@ -125,7 +155,7 @@ Function Install-ZimmermanTools{
   . c:\tools\ZimmermanTools\Get-ZimmermanTools.ps1 -Dest C:\Tools\ZimmermanTools
 }
 #############################################################################################
-function Get-CyberChef{
+function Get-CyberChef {
   # https://github.com/gchq/CyberChef
   # Download for offline usage
   Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Downloading CyberChef.zip..."
@@ -139,7 +169,7 @@ function Get-CyberChef{
   }
 }
 #############################################################################################
-function Get-Ghostpack{
+function Get-Ghostpack {
   # https://github.com/r3motecontrol/Ghostpack-CompiledBinaries
   # https://github.com/GhostPack
   Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Downloading Ghostpack.zip..."
@@ -152,8 +182,7 @@ function Get-Ghostpack{
   }
 }
 #############################################################################################
-function Get-CorkamiPosters()
-{
+function Get-CorkamiPosters {
   # https://github.com/corkami/pics
   # Beautiful reference
   Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Downloading Corkami Posters..."
@@ -166,8 +195,7 @@ function Get-CorkamiPosters()
   }
 }
 #############################################################################################
-function Get-SysInternals()
-{
+function Get-SysInternals {
   # https://docs.microsoft.com/en-us/sysinternals/downloads/sysinternals-suite
   Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Downloading SysInternals..."
   Try {
@@ -186,7 +214,7 @@ function Get-SysInternals()
   }
 }
 #############################################################################################
-function Get-Nim(){
+function Get-Nim {
   # https://github.com/dom96/choosenim
   Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Downloading Nim..."
   Try {
@@ -380,6 +408,24 @@ function Install-Frida {
   
   Start-Process -FilePath "c:\Python310\Scripts\pip.exe" -ArgumentList "install -q frida-tools" -Wait -NoNewWindow
 }
+
+function Install-HxD {
+  # https://mh-nexus.de/en/hxd/
+  # https://forum.mh-nexus.de/viewtopic.php?t=885
+  Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Downloading HxD..."
+  Try { 
+    (New-Object System.Net.WebClient).DownloadFile(
+      'https://mh-nexus.de/downloads/HxDPortableSetup.zip',
+      'C:\Tools\hxd.zip')
+
+    Expand-Archive -LiteralPath 'C:\Tools\hxd.zip' -DestinationPath 'C:\Tools\'
+    Start-Process -FilePath "C:\Tools\HxDPortableSetup.exe" -ArgumentList '/Silent /ALLUSERS /LANG=English /DIR="C:\Tools\HxD"' -Wait -NoNewWindow
+    del 'C:\Tools\hxd.zip'
+    del 'C:\Tools\HxDPortableSetup.exe'
+  } Catch {
+    Write-Host "HxD Download failed"
+  }
+}
 #############################################################################################
 #############################################################################################
 ## Think of the below as "main"
@@ -391,8 +437,12 @@ Set-Shortcut -src 'C:\Tools' -dst 'C:\users\vagrant\desktop\Tools.lnk'
 
 Install-Choco # Needed by other functions
 Install-ChocoEssentials
-Install-ChocoAnalysisPackages
+Install-AnalysisMiscTools
+Install-WebNetworkAnalysisTools
+Install-DebuggerDisassembler
+Install-HasherezadeTools
 Get-PEStudio
+Install-HxD
 Install-ZimmermanTools
 Get-CyberChef
 Get-CorkamiPosters
