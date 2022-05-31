@@ -10,6 +10,7 @@ Refer to the [Wiki](https://github.com/Humoud/BackBag-Lab-VM/wiki/1.-Home) for m
 - [Design](https://github.com/Humoud/BackBag-Lab-VM/wiki/2.-Design)
 - [Configuration](https://github.com/Humoud/BackBag-Lab-VM/wiki/3.-Configuration)
 - [Usage](https://github.com/Humoud/BackBag-Lab-VM/wiki/4.-Usage)
+    - [Important Note](https://github.com/Humoud/BackBag-Lab-VM/wiki/4.-Usage#important-note)
 - [Tools](https://github.com/Humoud/BackBag-Lab-VM/wiki/5.-Tools)
 
 ## Design
