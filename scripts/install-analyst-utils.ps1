@@ -16,6 +16,8 @@ $pythonPath       = "C:\Python310"
 mkdir C:\Tools\
 #############################################################################################
 #############################################################################################
+# Helper functions
+
 # Helper function to create shortcuts
 function Set-Shortcut([String] $src, [String] $dst) {
   $WshShell = New-Object -comObject WScript.Shell
@@ -23,6 +25,17 @@ function Set-Shortcut([String] $src, [String] $dst) {
   $Shortcut.TargetPath = $src
   $Shortcut.Save()
 }
+
+# Helper function to update PATH env var
+function Update-PathEnvVar([String] $path){
+  $mOldPath = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).path
+  $mNewPath = "$mOldPath;$path"
+  Set-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH -Value $mNewPath
+  $uOldPath = (Get-ItemProperty -Path 'Registry::HKEY_CURRENT_USER\Environment' -Name PATH).path
+  $uNewPath = "$uOldPath;$path"
+  Set-ItemProperty -Path 'Registry::HKEY_CURRENT_USER\Environment' -Name PATH -Value $uNewPath
+}
+
 #############################################################################################
 # Install Choco
 function Install-Choco {
@@ -156,13 +169,17 @@ Function Install-ZimmermanTools {
   Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Downloading Get-ZimmermanTools.zip..."
   Try { 
     (New-Object System.Net.WebClient).DownloadFile('https://f001.backblazeb2.com/file/EricZimmermanTools/Get-ZimmermanTools.zip', $zimmermanPath)
+    Expand-Archive -LiteralPath $zimmermanPath -DestinationPath 'C:\Tools\ZimmermanTools'
+    Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Running Get-ZimmermanTools.ps1..."
+    . c:\tools\ZimmermanTools\Get-ZimmermanTools.ps1 -Dest C:\Tools\ZimmermanTools
+    Update-PathEnvVar -path "C:\Tools\ZimmermanTools"
+    Update-PathEnvVar -path "C:\Tools\ZimmermanTools\EvtxECmd"
+    Update-PathEnvVar -path "C:\Tools\ZimmermanTools\RECmd"
+    Update-PathEnvVar -path "C:\Tools\ZimmermanTools\SQLECmd"
   } Catch {
     Write-Host "HTTPS connection failed. Switching to HTTP :("
     (New-Object System.Net.WebClient).DownloadFile('http://f001.backblazeb2.com/file/EricZimmermanTools/Get-ZimmermanTools.zip', $zimmermanPath)
   }
-  Expand-Archive -LiteralPath $zimmermanPath -DestinationPath 'C:\Tools\ZimmermanTools'
-  Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Running Get-ZimmermanTools.ps1..."
-  . c:\tools\ZimmermanTools\Get-ZimmermanTools.ps1 -Dest C:\Tools\ZimmermanTools
 }
 #############################################################################################
 function Get-CyberChef {
@@ -476,8 +493,27 @@ function Install-MalcodeAnalystPack {
       'C:\Tools\map_setup.exe')
     Start-Process -FilePath "C:\Tools\map_setup.exe" -ArgumentList '/Silent /ALLUSERS /DIR="C:\Tools\map"' -Wait -NoNewWindow
     del 'C:\Tools\map_setup.exe'
+    # Update path env var
+    [Environment]::SetEnvironmentVariable("PATH", $Env:PATH + ";C:\Tools\map", [EnvironmentVariableTarget]::Machine)
+    [Environment]::SetEnvironmentVariable("PATH", $Env:PATH + ";C:\Tools\map", [EnvironmentVariableTarget]::User)
   } Catch {
     Write-Host "Malcode Analyst Pack Download failed"
+  }
+}
+#############################################################################################
+function Install-AndroidPlatformTools {
+  # For ADB, fastboot, etc
+  # https://developer.android.com/studio/releases/platform-tools
+  Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Downloading Android Platform Tools..."
+  Try { 
+    (New-Object System.Net.WebClient).DownloadFile(
+      'https://dl.google.com/android/repository/platform-tools-latest-windows.zip',
+      'C:\Tools\platform-tools.zip')
+    Expand-Archive -LiteralPath 'C:\Tools\platform-tools.zip' -DestinationPath 'C:\Tools\Android\'
+    del 'C:\Tools\platform-tools.zip'
+    Update-PathEnvVar -path "C:\Tools\Android\platform-tools"
+  } Catch {
+    Write-Host "Android Platform Tools Download failed"
   }
 }
 #############################################################################################
@@ -517,10 +553,13 @@ Install-Bloodhound
 Install-CommunityVS2022
 Install-AtomicRedTeam
 
+###########
 # Misc
 Get-CorkamiPosters
 Get-CyberChef
 Get-SysInternals
 Install-Frida
+Install-AndroidPlatformTools
+
 
 Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Utilities installation complete!"
