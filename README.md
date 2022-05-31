@@ -6,7 +6,12 @@ BackBag Lab\VM, small enough to carry on your back (Back**pack**) 🎒💻
 I needed a way to quickly setup a small environment that allows me to test both, blue and red teaming related stuff on my laptop 💻. There are also times where I just need an ubuntu server or a win10 instance with a specific set of tools and not a whole environment. This project caters for such cases. 
 
 ## Wiki
-Refer to the [Wiki](https://github.com/Humoud/BackBag-Lab-VM/wiki/1.-Home) for more details on usage, configuration, and design.
+Refer to the [Wiki](https://github.com/Humoud/BackBag-Lab-VM/wiki/1.-Home) for more details:
+- [Design](https://github.com/Humoud/BackBag-Lab-VM/wiki/2.-Design)
+- [Configuration](https://github.com/Humoud/BackBag-Lab-VM/wiki/3.-Configuration)
+- [Usage](https://github.com/Humoud/BackBag-Lab-VM/wiki/4.-Usage)
+    - [Important Note](https://github.com/Humoud/BackBag-Lab-VM/wiki/4.-Usage#important-note)
+- [Tools](https://github.com/Humoud/BackBag-Lab-VM/wiki/5.-Tools)
 
 ## Design
 This project uses Vagrant and a collection of powershell\bash scripts to provision and configure VMs.
