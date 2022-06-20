@@ -1,5 +1,8 @@
 # BackBag Lab\VM
 
+<img src="backbag.png" alt="backbag"/>
+
+
 BackBag Lab\VM, small enough to carry on your back (Back**pack**) 🎒💻
 
 ## Background & Purpose
@@ -50,6 +53,12 @@ Windows base images are from [DetectionLab](https://github.com/clong/DetectionLa
 
 
 ## Credits
+
+Creative Director and 3D Logo Designer:
+ - Mohammad Boqammaz
+   - [Linkedin](https://www.linkedin.com/in/mboqammaz)
+   - [Instagram](https://www.instagram.com/bluesphere_)
+
 MacOS testing and troubleshooting:
  - Taylor Parizo:
      - https://twitter.com/TaylorParizo | https://github.com/axelarator

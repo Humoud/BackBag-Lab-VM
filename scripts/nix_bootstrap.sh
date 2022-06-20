@@ -106,7 +106,7 @@ install_binlex(){
   cd /home/vagrant
   chown -R vagrant:vagrant binlex/
 }
-#########################################################################################################
+#######################################################################################################
 install_pywhat(){
   # https://github.com/bee-san/pyWhat
   pip3 install pywhat[optimize]
