@@ -197,7 +197,7 @@ function Get-CyberChef {
       $latestVersion = $latestUri.split("/")[-1]
       $cyberChefLatest = 'https://github.com/gchq/CyberChef/releases/download/'+ $latestVersion +'/CyberChef_'+ $latestVersion +'.zip'
       
-    (New-Object System.Net.WebClient).DownloadFile('https://github.com/gchq/CyberChef/releases/download/v9.37.3/CyberChef_v9.37.3.zip', $cyberChefPath)
+    (New-Object System.Net.WebClient).DownloadFile($cyberChefLatest, $cyberChefPath)
     Expand-Archive -LiteralPath $cyberChefPath -DestinationPath 'C:\Tools\CyberChef'
     del $cyberChefPath
   } Catch {
