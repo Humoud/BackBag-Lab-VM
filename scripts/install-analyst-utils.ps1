@@ -188,7 +188,16 @@ function Get-CyberChef {
   Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Downloading CyberChef.zip..."
   Try {
     # TODO implement functionality to update hardcoded version to latest release
-    (New-Object System.Net.WebClient).DownloadFile('https://github.com/gchq/CyberChef/releases/download/v9.37.3/CyberChef_v9.37.3.zip', $cyberChefPath)
+    # Get latest version of Cyberchef
+    $latestUri = Invoke-WebRequest -UseBasicParsing -Method Get -Uri ('https://github.com/gchq/CyberChef/releases/latest') -MaximumRedirection 0 -ErrorAction SilentlyContinue
+      if ($latestUri.StatusCode -eq 302) 
+      {
+          $latestUri = $latestUri.Headers.Location 
+      } 
+      $latestVersion = $latestUri.split("/")[-1]
+      $cyberChefLatest = 'https://github.com/gchq/CyberChef/releases/download/'+ $latestVersion +'/CyberChef_'+ $latestVersion +'.zip'
+      
+    (New-Object System.Net.WebClient).DownloadFile($cyberChefLatest, $cyberChefPath)
     Expand-Archive -LiteralPath $cyberChefPath -DestinationPath 'C:\Tools\CyberChef'
     del $cyberChefPath
   } Catch {
