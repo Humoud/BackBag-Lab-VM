@@ -126,6 +126,74 @@ install_spiderfoot(){
   cd /home/vagrant
 }
 #########################################################################################################
+install_arkime(){
+  ## PRE-REQUISITE: docker, to run ES
+  # https://arkime.com/downloads
+  ARKIME_DEB=arkime_3.4.2-1_amd64.deb
+  ES_IMAGE=elasticsearch:7.17.5
+  ARKIME_INSTALL_DIR=/opt/arkime
+  ARKIME_NAME=arkime
+  ARKIME_PORT=8080
+
+  echo "Arkime - Pulling $ES_IMAGE"
+  #docker pull $ES_IMAGE;
+
+  echo "Arkime - Downloading DEB package"
+  #cd /opt && wget https://s3.amazonaws.com/files.molo.ch/builds/ubuntu-20.04/$ARKIME_DEB;
+
+  echo "Arkime - Installing DEB package"
+  cd /opt && apt install -f ./$ARKIME_DEB;
+
+  echo "Arkime - Running $ES_IMAGE container (name: es01)"
+  docker run --name es01 -p 9200:9200 -p 9300:9300 -e "http.host=0.0.0.0" -e "transport.host=127.0.0.1" -e "xpack.security.enabled=false" -d -it $ES_IMAGE;
+  echo "Arkime - Giving Elasticsearch time to start up (30 secs)"
+  sleep 30;
+
+  echo "Arkime - Generating config file"
+  sed -e "s/ARKIME_INTERFACE/eth0;eth1/g" -e "s/viewPort = 8005/viewPort = $ARKIME_PORT/g" -e "s,ARKIME_ELASTICSEARCH,http://localhost:9200,g" -e "s/ARKIME_PASSWORD/changeme/g" -e "s,ARKIME_INSTALL_DIR,/opt/arkime,g" < $ARKIME_INSTALL_DIR/etc/config.ini.sample > $ARKIME_INSTALL_DIR/etc/config.ini;
+
+  echo "Arkime - Creating log dirs"
+  CREATEDIRS="logs raw"
+  for CREATEDIR in $CREATEDIRS; do
+    mkdir -m 0700 -p $ARKIME_INSTALL_DIR/$CREATEDIR && \
+    chown nobody $ARKIME_INSTALL_DIR/$CREATEDIR
+  done
+
+  if [ -d "/etc/logrotate.d" ] && [ ! -f "/etc/logrotate.d/$ARKIME_NAME" ]; then
+    echo "Arkime - Installing /etc/logrotate.d/$ARKIME_NAME to rotate files after 7 days"
+    cat << EOF > /etc/logrotate.d/$ARKIME_NAME
+$ARKIME_INSTALL_DIR/logs/capture.log
+$ARKIME_INSTALL_DIR/logs/viewer.log {
+    daily
+    rotate 7
+    notifempty
+    copytruncate
+}
+EOF
+fi
+
+  if [ -d "/etc/security/limits.d" ] && [ ! -f "/etc/security/limits.d/99-arkime.conf" ]; then
+    echo "Arkime - Installing /etc/security/limits.d/99-arkime.conf to make core and memlock unlimited"
+    cat << EOF > /etc/security/limits.d/99-arkime.conf
+nobody  -       core    unlimited
+root    -       core    unlimited
+nobody  -       memlock    unlimited
+root    -       memlock    unlimited
+EOF
+  fi
+
+  echo "Arkime - Downloading GEO files (see https://arkime.com/faq#maxmind)"
+  $ARKIME_INSTALL_DIR/bin/arkime_update_geo.sh > /dev/null
+
+  echo "Arkime - Clearing Elasticsearch"
+  $ARKIME_INSTALL_DIR/db/db.pl http://localhost:9200 init \
+  echo "Arkime - Creating admin user"
+  $ARKIME_INSTALL_DIR/bin/arkime_add_user.sh admin "Admin User" changeme --admin
+  echo "Arkime - Starting capture and viewer services"
+  systemctl start arkimecapture.service && systemctl start arkimeviewer.service
+  echo "Arkime - Service running on port 8080"
+}
+#########################################################################################################
 docker_evilwinrm(){
   # https://github.com/Hackplayers/evil-winrm
   docker pull oscarakaelvis/evil-winrm:latest
@@ -160,6 +228,7 @@ main() {
   apt_install_docker
   apt_install_scanners
   apt_install_zeek
+  #install_arkime # Requires Docker. Tested w/2 CPU cores, 4GB
   install_binlex
   install_metasploit
   install_sliverc2

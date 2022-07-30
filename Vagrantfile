@@ -84,6 +84,8 @@ Vagrant.configure("2") do |config|
       # web access
       # cfg.vm.network "forwarded_port", guest: 80,  host: 8080, auto_correct: true
       # cfg.vm.network "forwarded_port", guest: 443, host: 8443, auto_correct: true
+      # For Arkime:
+      # cfg.vm.network "forwarded_port", guest: 8080, host: 8081, auto_correct: true
       #
 
       cfg.vm.provider "vmware_desktop" do |v, override|
