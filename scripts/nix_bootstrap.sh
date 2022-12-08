@@ -1,6 +1,7 @@
 SPIDERFOOT_VERSION=4.0
 YARA_VERSION=4.2.1
 COMPOSE_VERSION=2.5.0
+FENNEC_VERSION=0.3.3
 #########################################################################################################
 modify_motd() {
   echo "[$(date +%H:%M:%S)]: Updating the MOTD..."
@@ -115,14 +116,17 @@ install_pywhat(){
 install_spiderfoot(){
   cd /opt
   wget https://github.com/smicallef/spiderfoot/archive/v${SPIDERFOOT_VERSION}.tar.gz
-  tar zxvf v${SPIDERFOOT_VERSION}.tar.gz
-  cd spiderfoot-${SPIDERFOOT_VERSION}
-  pip3 install -r requirements.txt
-  echo "python3 ./sf.py -l 0.0.0.0:5001" > run_spiderfoot.sh
   chmod +x run_spiderfoot.sh
   # clean up
   cd ..
   rm -rf v${SPIDERFOOT_VERSION}.tar.gz
+  cd /home/vagrant
+}
+#########################################################################################################
+install_fennec(){
+  cd /opt
+  wget https://github.com/AbdulRhmanAlfaifi/Fennec/releases/download/v${FENNEC_VERSION}/fennec_linux_x86_64
+  chmod +x fennec_linux_x86_64
   cd /home/vagrant
 }
 #########################################################################################################
@@ -235,6 +239,7 @@ main() {
   install_radare2
   install_yara
   install_pywhat
+  install_fennec
   install_spiderfoot
   docker_evilwinrm
   docker_powershell_empire
