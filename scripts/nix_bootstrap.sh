@@ -214,6 +214,7 @@ get_airstrike(){
   git clone https://github.com/smokeme/airstrike.git
   cd /home/vagrant
 }
+#########################################################################################################
 docker_evilwinrm(){
   # https://github.com/Hackplayers/evil-winrm
   docker pull oscarakaelvis/evil-winrm:latest
@@ -258,6 +259,7 @@ main() {
   #install_barq
   install_fennec
   install_spiderfoot
+  get_airstrike
   docker_evilwinrm
   docker_powershell_empire
   docker_crackmapexec
