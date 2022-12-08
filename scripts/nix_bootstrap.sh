@@ -124,6 +124,7 @@ install_spiderfoot(){
 }
 #########################################################################################################
 install_fennec(){
+  # https://github.com/AbdulRhmanAlfaifi/Fennec
   cd /opt
   wget https://github.com/AbdulRhmanAlfaifi/Fennec/releases/download/v${FENNEC_VERSION}/fennec_linux_x86_64
   chmod +x fennec_linux_x86_64
