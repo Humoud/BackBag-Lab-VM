@@ -12,6 +12,7 @@ $ghostpackPath    = "C:\Tools\ghostpack.zip"
 $sysInternalsPath = "C:\Tools\SysInternals.zip"
 $bloodhoundPath   = "C:\Tools\Bloodhound.zip"
 $neo4jPath        = "C:\Tools\neo4j.zip"
+$airstrikePath    = "C:\Tools\airstrike.zip"
 $pythonPath       = "C:\Python310"
 mkdir C:\Tools\
 #############################################################################################
@@ -202,6 +203,18 @@ function Get-CyberChef {
     del $cyberChefPath
   } Catch {
     Write-Host "CyberChef download failed..."
+  }
+}
+#############################################################################################
+function Get-Airstrike {
+  # https://github.com/smokeme/airstrike
+  Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Downloading airstrike..."
+  Try {
+    (New-Object System.Net.WebClient).DownloadFile('https://github.com/smokeme/airstrike/archive/refs/heads/main.zip', $airstrikePath)
+    Expand-Archive -LiteralPath $airstrikePath 'C:\Tools\'
+    del $airstrikePath
+  } Catch {
+    Write-Host "Airstrike download failed..."
   }
 }
 #############################################################################################
@@ -582,6 +595,7 @@ Install-MalcodeAnalystPack
 Install-Burp
 Get-Ghostpack
 Get-Nim
+Get-Airstrike
 Install-GoLang
 Install-Bloodhound
 Install-CommunityVS2022

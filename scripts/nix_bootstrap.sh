@@ -208,6 +208,12 @@ EOF
   echo "Arkime - Service running on port 8080"
 }
 #########################################################################################################
+get_airstrike(){
+  # https://github.com/smokeme/airstrike
+  cd /opt
+  git clone https://github.com/smokeme/airstrike.git
+  cd /home/vagrant
+}
 docker_evilwinrm(){
   # https://github.com/Hackplayers/evil-winrm
   docker pull oscarakaelvis/evil-winrm:latest
