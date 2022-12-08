@@ -276,7 +276,7 @@ main() {
   install_pywhat
   install_wwwtree
   install_villain
-  #install_barq
+  install_barq
   install_fennec
   install_spiderfoot
   get_airstrike
