@@ -132,6 +132,15 @@ install_wwwtree(){
   cd /home/vagrant
 }
 #########################################################################################################
+install_villain(){
+  # https://github.com/t3l3machus/Villain
+  cd /opt
+  git clone https://github.com/t3l3machus/Villain.git
+  cd Villain
+  pip3 install -r requirements.txt
+  cd /home/vagrant
+}
+#########################################################################################################
 install_barq(){
   # https://github.com/Voulnet/barq
   cd /opt
@@ -266,6 +275,7 @@ main() {
   install_yara
   install_pywhat
   install_wwwtree
+  install_villain
   #install_barq
   install_fennec
   install_spiderfoot
