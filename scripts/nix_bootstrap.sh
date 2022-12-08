@@ -123,6 +123,15 @@ install_spiderfoot(){
   cd /home/vagrant
 }
 #########################################################################################################
+install_barq(){
+  # https://github.com/Voulnet/barq
+  cd /opt
+  git clone https://github.com/Voulnet/barq.git
+  cd barq
+  pip3 install -r requirements.txt
+  cd /home/vagrant
+}
+#########################################################################################################
 install_fennec(){
   # https://github.com/AbdulRhmanAlfaifi/Fennec
   cd /opt
@@ -240,6 +249,7 @@ main() {
   install_radare2
   install_yara
   install_pywhat
+  #install_barq
   install_fennec
   install_spiderfoot
   docker_evilwinrm
