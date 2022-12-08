@@ -123,6 +123,15 @@ install_spiderfoot(){
   cd /home/vagrant
 }
 #########################################################################################################
+install_wwwtree(){
+  # https://github.com/t3l3machus/wwwtree
+  cd /opt
+  git clone https://github.com/t3l3machus/wwwtree.git
+  cd wwwtree
+  pip3 install -r requirements.txt
+  cd /home/vagrant
+}
+#########################################################################################################
 install_barq(){
   # https://github.com/Voulnet/barq
   cd /opt
@@ -256,6 +265,7 @@ main() {
   install_radare2
   install_yara
   install_pywhat
+  install_wwwtree
   #install_barq
   install_fennec
   install_spiderfoot
