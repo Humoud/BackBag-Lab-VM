@@ -87,7 +87,6 @@ function Install-AnalysisMiscTools {
   Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Downloading and installing analysis misc tools..."
   ##########################################################
   $pkgs = 'processhacker',
-          'resourcehacker.portable',
           'yara',
           'die'
           # 'dotpeek' Exception of type 'System.OutOfMemoryException' was thrown.
@@ -552,12 +551,9 @@ function Install-DummyFilesCreator {
   Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Downloading Dummy Files Creator..."
   Try { 
     (New-Object System.Net.WebClient).DownloadFile(
-      'https://github.com/Humoud/dummy-files-creator/archive/refs/heads/master.zip',
+      'https://github.com/matuzalemmuller/dummy-files-creator/releases/download/v3.0.0/windows-one-file-x86_64.zip',
       'C:\Tools\dummyfilescreator.zip')
     Expand-Archive -LiteralPath 'C:\Tools\dummyfilescreator.zip' -DestinationPath 'C:\Tools\'
-    Start-Process -FilePath "cmd" -ArgumentList '/c cd C:\Tools\dummy-files-creator-master\spec && C:\Python310\Scripts\pip.exe install -q -r ..\requirements.txt && C:\Python310\Scripts\pyinstaller.exe --clean --windowed --onefile windows.spec' -Wait -NoNewWindow
-    cp 'C:\tools\dummy-files-creator-master\spec\dist\Dummy Files Creator.exe' C:\Tools\
-    Remove-Item C:\Tools\dummy-files-creator-master\ -Recurse
     del 'C:\Tools\dummyfilescreator.zip'
   } Catch {
     Write-Host "Dummy Files Creator Download failed"
@@ -568,7 +564,6 @@ function Install-DummyFilesCreator {
 ## Think of the below as "main"
 ## Include or exclude functions as you please
 # Create shortcut for tools folder
-
 Set-Shortcut -src 'C:\Tools' -dst 'C:\users\vagrant\desktop\Tools.lnk'
 
 
@@ -577,37 +572,37 @@ Install-ChocoEssentials
 ###########
 # Blue-ish
 Install-AnalysisMiscTools
-Install-ZimmermanTools
-Install-Kansa
-Install-Chainsaw
-Install-DeepBlueCLI
+# Install-ZimmermanTools
+# Install-Kansa
+# Install-Chainsaw
+# Install-DeepBlueCLI
 Get-PEStudio
 Install-NetworkAnalysisTools
-Install-DebuggerDisassembler
-Install-HasherezadeTools
-Install-HxD
-Install-Jadx
-Install-PEFile
-Install-APIMonitor
-Install-MalcodeAnalystPack
+# Install-DebuggerDisassembler
+# Install-HasherezadeTools
+# Install-HxD
+# Install-Jadx
+# Install-PEFile
+# Install-APIMonitor
+# Install-MalcodeAnalystPack
 ###########
 # Red-ish
-Install-Burp
-Get-Ghostpack
-Get-Nim
-Get-Airstrike
-Install-GoLang
-Install-Bloodhound
-Install-CommunityVS2022
-Install-AtomicRedTeam
+# Install-Burp
+# Get-Ghostpack
+# Get-Nim
+# Get-Airstrike
+# Install-GoLang
+# Install-Bloodhound
+# Install-CommunityVS2022
+# Install-AtomicRedTeam
 
 ###########
 # Misc
-Get-CorkamiPosters
+# Get-CorkamiPosters
 Get-CyberChef
 Get-SysInternals
-Install-Frida
-Install-AndroidPlatformTools
+# Install-Frida
+# Install-AndroidPlatformTools
 Install-DummyFilesCreator
 
 

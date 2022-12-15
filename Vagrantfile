@@ -14,8 +14,8 @@
 
 # Lab VM Selection
 NIX01    = true
-WINSRV01 = true
-WINSRV02 = true
+WINSRV01 = false
+WINSRV02 = false
 WIN01    = true
 
 ######################################################
@@ -89,7 +89,7 @@ Vagrant.configure("2") do |config|
       #
 
       cfg.vm.provider "vmware_desktop" do |v, override|
-        v.vmx["displayname"] = "backbag-nix01"
+        v.vmx["displayname"] = "barcamp-backbag-nix01"
         v.vmx["virtualhw.version"] = 16
         v.memory = NIX01_RAM
         v.cpus = NIX01_CPU
@@ -97,7 +97,7 @@ Vagrant.configure("2") do |config|
       end
       cfg.vm.provider "virtualbox" do |v, override|
         v.gui = true
-        v.name = "backbag-nix01"
+        v.name = "barcamp-backbag-nix01"
         v.customize ["modifyvm", :id, "--memory", NIX01_RAM]
         v.customize ["modifyvm", :id, "--cpus", NIX01_CPU]
         v.customize ["modifyvm", :id, "--vram", "32"]
@@ -271,19 +271,19 @@ Vagrant.configure("2") do |config|
       # Script below contains Win tools and dev env setup
       cfg.vm.provision "shell", path: "scripts/install-analyst-utils.ps1", privileged: false
       # ##############################################################################################
-      cfg.vm.provision "shell", path: "scripts/install-sysmon.ps1", privileged: false
+      # cfg.vm.provision "shell", path: "scripts/insfiretall-sysmon.ps1", privileged: false
       # ##############################################################################################
 
       cfg.vm.provider "vmware_desktop" do |v, override|
         v.vmx["ethernet1.pcislotnumber"] = "33"
-        v.vmx["displayname"] = "backbag-win01"
+        v.vmx["displayname"] = "barcamp-backbag-win01"
         v.memory = WIN01_RAM
         v.cpus = WIN01_CPU
         v.gui = true
       end
       cfg.vm.provider "virtualbox" do |v, override|
         v.gui = true
-        v.name = "backbag-win01"
+        v.name = "barcamp-backbag-win01"
         v.default_nic_type = "82545EM"
         v.customize ["modifyvm", :id, "--memory", WIN01_RAM]
         v.customize ["modifyvm", :id, "--cpus", WIN01_CPU]

@@ -266,24 +266,24 @@ main() {
   apt_install_prerequisites
   apt_install_docker
   apt_install_scanners
-  apt_install_zeek
+  # apt_install_zeek
   #install_arkime # Requires Docker. Tested w/2 CPU cores, 4GB
-  install_binlex
-  install_metasploit
-  install_sliverc2
-  install_radare2
-  install_yara
-  install_pywhat
+  # install_binlex
+  # install_metasploit
+  # install_sliverc2
+  # install_radare2
+  # install_yara
+  # install_pywhat
   install_wwwtree
   install_villain
-  install_barq
-  install_fennec
-  install_spiderfoot
-  get_airstrike
-  docker_evilwinrm
-  docker_powershell_empire
+  # install_barq
+  # install_fennec
+  # install_spiderfoot
+  # get_airstrike
+  # docker_evilwinrm
+  # docker_powershell_empire
   docker_crackmapexec
-  docker_clamav
+  # docker_clamav
   ### clean up
   apt -y autoremove
 }
