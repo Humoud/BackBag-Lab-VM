@@ -13,6 +13,7 @@ $sysInternalsPath = "C:\Tools\SysInternals.zip"
 $bloodhoundPath   = "C:\Tools\Bloodhound.zip"
 $neo4jPath        = "C:\Tools\neo4j.zip"
 $airstrikePath    = "C:\Tools\airstrike.zip"
+$dnspyex          = "C:\Tools\dnspyex.zip"
 $pythonPath       = "C:\Python310"
 mkdir C:\Tools\
 #############################################################################################
@@ -125,8 +126,7 @@ function Install-DebuggerDisassembler {
   Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Downloading and installing Debuggers and Disassemblers..."
   ##########################################################
   $pkgs = 'ghidra',
-          'x64dbg.portable',
-          'dnspy'
+          'x64dbg.portable'
           # 'dotpeek' Exception of type 'System.OutOfMemoryException' was thrown.
   #########################################################
   ForEach ($pkgName in $pkgs)
@@ -145,6 +145,19 @@ function Install-HasherezadeTools {
   ForEach ($pkgName in $pkgs)
   {
     choco install -y --limit-output --ignore-checksums --no-progress $pkgName
+  }
+}
+#############################################################################################
+function Get-DnSpyEx {
+  Write-Host "$('[{0:HH:mm}]' -f (Get-Date)) Downloading DnSpyEx.zip..."
+  Try { 
+    (New-Object System.Net.WebClient).DownloadFile('https://github.com/dnSpyEx/dnSpy/releases/download/v6.3.0/dnSpy-net-win64.zip', $dnspyex)
+    Expand-Archive -LiteralPath $dnspyex -DestinationPath 'C:\Tools\dnspyex'
+    del $dnspyex
+    $desk = 'C:\users\vagrant\desktop\'
+    Set-Shortcut -src 'C:\Tools\dnspyex\dnSpy.exe' -dst $desk'DnSpyEx.lnk'
+  } Catch { 
+    Write-Host "Error downloading dnspy :("
   }
 }
 #############################################################################################
@@ -584,6 +597,7 @@ Install-DeepBlueCLI
 Get-PEStudio
 Install-NetworkAnalysisTools
 Install-DebuggerDisassembler
+Get-DnSpyEx
 Install-HasherezadeTools
 Install-HxD
 Install-Jadx

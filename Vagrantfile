@@ -13,9 +13,9 @@
 ###### CONFIG VARIABLES ###########################################################
 
 # Lab VM Selection
-NIX01    = true
-WINSRV01 = true
-WINSRV02 = true
+NIX01    = false
+WINSRV01 = false
+WINSRV02 = false
 WIN01    = true
 
 ######################################################
